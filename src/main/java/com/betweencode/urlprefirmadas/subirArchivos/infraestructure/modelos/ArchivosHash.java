@@ -1,4 +1,4 @@
-package com.atiendelos.administracion.urlprefirmadas.subirArchivos.infraestructure.modelos;
+package com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

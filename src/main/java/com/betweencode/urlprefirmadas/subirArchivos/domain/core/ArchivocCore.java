@@ -1,11 +1,9 @@
-package com.atiendelos.administracion.urlprefirmadas.subirArchivos.domain.core;
+package com.betweencode.urlprefirmadas.subirArchivos.domain.core;
 
-import com.atiendelos.administracion.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
-import com.atiendelos.administracion.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
-import com.atiendelos.administracion.urlprefirmadas.subirArchivos.infraestructure.modelos.RepositoryHashCreation;
+import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
+import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
+import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.RepositoryHashCreation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
