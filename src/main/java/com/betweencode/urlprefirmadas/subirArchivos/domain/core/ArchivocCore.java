@@ -34,7 +34,14 @@ public class ArchivocCore implements subiendoArchivo {
         }
 
         String folder = normalizarCarpeta(carpeta);
-        String objectName = folder.concat("/").concat(file.getName());
+        String nombreArchivo = StringUtils.cleanPath(
+                file.getOriginalFilename() == null ? "archivo" : file.getOriginalFilename());
+        if (!StringUtils.hasText(nombreArchivo) || nombreArchivo.contains("..")) {
+            throw new IllegalArgumentException("El nombre del archivo no es válido");
+        }
+        String objectName = StringUtils.hasText(folder)
+                ? folder.concat("/").concat(nombreArchivo)
+                : nombreArchivo;
 
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, objectName)
                 .setContentType(file.getContentType())
@@ -49,7 +56,7 @@ public class ArchivocCore implements subiendoArchivo {
         ArchivosHash archivoHash = new ArchivosHash();
         archivoHash.setTokenUid(UUID.randomUUID().toString());
         archivoHash.setCarpeta(folder);
-        archivoHash.setArchivo(file.getName());
+        archivoHash.setArchivo(nombreArchivo);
         archivoHash.setBanActivo(true);
 
         try {
