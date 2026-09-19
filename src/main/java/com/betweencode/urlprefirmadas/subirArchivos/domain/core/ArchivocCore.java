@@ -1,5 +1,6 @@
 package com.betweencode.urlprefirmadas.subirArchivos.domain.core;
 
+import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.RecuperacionListado;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.RepositoryHashCreation;
@@ -12,14 +13,19 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 
 
 @Service
-public class ArchivocCore implements subiendoArchivo {
+public class ArchivocCore implements subiendoArchivo, RecuperacionListado {
 
     @Autowired
     private RepositoryHashCreation respository;
+
+
+    @Autowired
+    private RepositoryHashCreation repository;
 
     @Autowired
     private Storage storage;
@@ -78,5 +84,10 @@ public class ArchivocCore implements subiendoArchivo {
             throw new IllegalArgumentException("La carpeta no puede contener '..'");
         }
         return folder;
+    }
+
+    @Override
+    public List<ArchivosHash> obtenerListdo(){
+        return repository.findAll();
     }
 }

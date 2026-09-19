@@ -1,10 +1,12 @@
 package com.betweencode.urlprefirmadas.subirArchivos.application;
 
 
+import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.RecuperacionListado;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.RepositoryHashCreation;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,30 +17,31 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+@RequiredArgsConstructor
 @Controller
 @RequestMapping
 public class RenderizadoHtmlPoc {
 
 
-    @Autowired
-    private subiendoArchivo subirArchivosCore;
+
+    private final subiendoArchivo subirArchivosCore;
 
 
-    @Autowired
-    private RepositoryHashCreation repository;
+
+    private final RecuperacionListado recuperacionListado;
 
 
 
     @GetMapping("/archivos")
     public String listado(Model model, HttpServletRequest request) {
-        model.addAttribute("archivos", repository.findAll());
+        model.addAttribute("archivos", recuperacionListado.obtenerListdo());
         model.addAttribute("servidor", obtenerServidor(request));
         return "archivos/listado";
     }
 
     @GetMapping("/archivos/tabla")
     public String tablaEntity(Model model) {
-        model.addAttribute("archivos", repository.findAll());
+        model.addAttribute("archivos", recuperacionListado.obtenerListdo());
         return "archivos/tabla-entity";
     }
 
