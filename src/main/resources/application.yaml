@@ -24,5 +24,15 @@ spring:
           lob:
             non_contextual_creation: true
 
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:100MB}
+      max-request-size: ${MAX_REQUEST_SIZE:100MB}
+
+gcp:
+  storage:
+    # En GCP se detecta automáticamente; en local define GOOGLE_CLOUD_PROJECT.
+    project-id: ${GOOGLE_CLOUD_PROJECT}
+    bucket-name: ${GCS_BUCKET_NAME}
 
 
