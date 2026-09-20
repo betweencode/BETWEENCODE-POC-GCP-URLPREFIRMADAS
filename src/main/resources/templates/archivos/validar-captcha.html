@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Validación</title>
+    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfbgsMtAAAAAKBnPVllt4_PAvTu6EFp5VhYenMk"></script>
 </head>
 <body>
 <main>
@@ -16,15 +17,18 @@
 </main>
 
 <script>
-    setTimeout(() => {
-        const bytes = new Uint8Array(32);
-        crypto.getRandomValues(bytes);
-        document.getElementById('captcha-hash').value = Array.from(
-            bytes,
-            byte => byte.toString(16).padStart(2, '0')
-        ).join('');
-        document.getElementById('captcha-form').submit();
-    }, 3000);
+
+
+    window.onload = ()=>{
+        setTimeout(()=>{
+            grecaptcha.enterprise.ready(async () => {
+                const token = await grecaptcha.enterprise.execute('6LfbgsMtAAAAAKBnPVllt4_PAvTu6EFp5VhYenMk', {action: 'DOWNLOAD_FILE'});
+                document.getElementById('captcha-hash').value = token;
+                document.getElementById('captcha-form').submit();
+            });
+        },3000)
+    }
+
 </script>
 </body>
 </html>

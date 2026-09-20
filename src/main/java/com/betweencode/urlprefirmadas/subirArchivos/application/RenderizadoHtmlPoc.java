@@ -4,15 +4,13 @@ package com.betweencode.urlprefirmadas.subirArchivos.application;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.RecuperacionListado;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.GeneracionUrlPrefirmada;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
+import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.RecaptchaEnterpriseClient;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -32,6 +30,8 @@ public class RenderizadoHtmlPoc {
     private final RecuperacionListado recuperacionListado;
 
     private final GeneracionUrlPrefirmada generacionUrlPrefirmada;
+
+    private final RecaptchaEnterpriseClient recaptchaEnterpriseClient;
 
 
 
@@ -61,7 +61,7 @@ public class RenderizadoHtmlPoc {
 
     @GetMapping("/{hashUid}")
     public String validarCaptcha(
-            @org.springframework.web.bind.annotation.PathVariable String hashUid,
+            @PathVariable String hashUid,
             Model model) {
         model.addAttribute("hashUid", hashUid);
         return "archivos/validar-captcha";
@@ -80,7 +80,7 @@ public class RenderizadoHtmlPoc {
     }
 
     private boolean autenticarCaptchaDummy(String captchaHash) {
-        return captchaHash != null && !captchaHash.isBlank();
+        return recaptchaEnterpriseClient.autenticar(captchaHash);
     }
 
 

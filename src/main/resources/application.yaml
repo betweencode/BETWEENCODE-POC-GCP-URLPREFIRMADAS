@@ -35,4 +35,11 @@ gcp:
     project-id: ${GOOGLE_CLOUD_PROJECT}
     bucket-name: ${GCS_BUCKET_NAME}
 
+recaptcha:
+  enterprise:
+    base-url: https://recaptchaenterprise.googleapis.com
+    api-key: ${RECAPTCHA_API_KEY}
+    site-key: ${RECAPTCHA_SITE_KEY:6LfbgsMtAAAAAKBnPVllt4_PAvTu6EFp5VhYenMk}
+    expected-action: 'DOWNLOAD_FILE'
+    minimum-score: ${RECAPTCHA_MINIMUM_SCORE:0.5}
 
