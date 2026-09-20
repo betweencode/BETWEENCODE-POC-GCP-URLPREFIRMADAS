@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Validación</title>
+</head>
+<body>
+<main>
+    <h1>Validaremos tu captcha</h1>
+
+    <form id="captcha-form" th:action="@{/validar-captcha}" method="post">
+        <input type="hidden" name="hashUid" th:value="${hashUid}">
+        <input id="captcha-hash" type="hidden" name="captchaHash">
+    </form>
+</main>
+
+<script>
+    setTimeout(() => {
+        const bytes = new Uint8Array(32);
+        crypto.getRandomValues(bytes);
+        document.getElementById('captcha-hash').value = Array.from(
+            bytes,
+            byte => byte.toString(16).padStart(2, '0')
+        ).join('');
+        document.getElementById('captcha-form').submit();
+    }, 3000);
+</script>
+</body>
+</html>

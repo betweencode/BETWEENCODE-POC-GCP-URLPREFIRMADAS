@@ -2,12 +2,11 @@ package com.betweencode.urlprefirmadas.subirArchivos.application;
 
 
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.RecuperacionListado;
+import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.GeneracionUrlPrefirmada;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
-import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.RepositoryHashCreation;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.net.URL;
 
 @RequiredArgsConstructor
 @Controller
@@ -29,6 +30,8 @@ public class RenderizadoHtmlPoc {
 
 
     private final RecuperacionListado recuperacionListado;
+
+    private final GeneracionUrlPrefirmada generacionUrlPrefirmada;
 
 
 
@@ -54,6 +57,30 @@ public class RenderizadoHtmlPoc {
         redirectAttributes.addFlashAttribute(
                 "mensaje", "Archivo subido correctamente: " + archivo.getArchivo());
         return "redirect:/archivos";
+    }
+
+    @GetMapping("/{hashUid}")
+    public String validarCaptcha(
+            @org.springframework.web.bind.annotation.PathVariable String hashUid,
+            Model model) {
+        model.addAttribute("hashUid", hashUid);
+        return "archivos/validar-captcha";
+    }
+
+    @PostMapping("/validar-captcha")
+    public String procesarCaptcha(
+            @RequestParam("hashUid") String hashUid,
+            @RequestParam("captchaHash") String captchaHash) {
+        if (!autenticarCaptchaDummy(captchaHash)) {
+            throw new IllegalArgumentException("El captcha no es válido");
+        }
+
+        URL urlPrefirmada = generacionUrlPrefirmada.generar(hashUid);
+        return "redirect:" + urlPrefirmada;
+    }
+
+    private boolean autenticarCaptchaDummy(String captchaHash) {
+        return captchaHash != null && !captchaHash.isBlank();
     }
 
 

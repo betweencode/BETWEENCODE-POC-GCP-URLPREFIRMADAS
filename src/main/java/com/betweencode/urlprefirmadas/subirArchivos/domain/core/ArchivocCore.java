@@ -1,6 +1,7 @@
 package com.betweencode.urlprefirmadas.subirArchivos.domain.core;
 
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.RecuperacionListado;
+import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.GeneracionUrlPrefirmada;
 import com.betweencode.urlprefirmadas.subirArchivos.domain.incoming.subiendoArchivo;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.modelos.ArchivosHash;
 import com.betweencode.urlprefirmadas.subirArchivos.infraestructure.RepositoryHashCreation;
@@ -13,12 +14,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 import java.util.List;
 import java.util.UUID;
 
 
 @Service
-public class ArchivocCore implements subiendoArchivo, RecuperacionListado {
+public class ArchivocCore implements subiendoArchivo, RecuperacionListado, GeneracionUrlPrefirmada {
 
     @Autowired
     private RepositoryHashCreation respository;
@@ -89,5 +92,23 @@ public class ArchivocCore implements subiendoArchivo, RecuperacionListado {
     @Override
     public List<ArchivosHash> obtenerListdo(){
         return repository.findAll();
+    }
+
+    @Override
+    public URL generar(String hashUid) {
+        ArchivosHash archivoHash = repository.findById(hashUid)
+                .filter(archivo -> Boolean.TRUE.equals(archivo.getBanActivo()))
+                .orElseThrow(() -> new IllegalArgumentException("El archivo no existe o no está activo"));
+
+        String objectName = StringUtils.hasText(archivoHash.getCarpeta())
+                ? archivoHash.getCarpeta().concat("/").concat(archivoHash.getArchivo())
+                : archivoHash.getArchivo();
+
+        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, objectName).build();
+        return storage.signUrl(
+                blobInfo,
+                5,
+                TimeUnit.SECONDS,
+                Storage.SignUrlOption.withV4Signature());
     }
 }
